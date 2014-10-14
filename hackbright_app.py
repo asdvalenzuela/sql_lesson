@@ -8,28 +8,63 @@ def make_new_student(first_name, last_name, github):
     DB.execute(query, (first_name,last_name,github))
     CONN.commit()
     print "Successfully added student: %s %s" % (first_name, last_name)
-#added this, not complete
-def make_new_project(project_title, github):
-    query = """INSERT into Students values (?,?,?)"""
-    DB.execute(query, (first_name,last_name,github))
+
+def make_new_project(title, description, max_grade):
+    query = """INSERT into Projects (title, description, max_grade) values (?,?,?)"""
+    DB.execute(query, (title,description,max_grade))
     CONN.commit()
-    print "Successfully added student: %s %s" % (first_name, last_name)
+    print "Successfully added project %s, %s, with max grade %s" % (title, description,max_grade)
 
 def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
+    print row
     print """\
 Student: %s %s
 Github account: %s"""%(row[0], row[1], row[2])
-#added this, not complete
-def get_projects_by_title(project_title):
-    query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
-    DB.execute(query, (github,))
+
+def get_projects_by_title(title):
+    query = """SELECT title,description,max_grade FROM Projects WHERE title = ?"""
+    DB.execute(query, (title,))
     row = DB.fetchone()
+    print row
     print """\
-Project Title: %s %s
-Github account: %s"""%(row[0], row[1], row[2])
+Project: %s
+Description: %s 
+Max_Grade: %s""" % (row[0], row[1], row[2]) 
+
+def get_grade_by_project_title(student_github, project_title):
+    # query = """SELECT first_name, last_name, 
+    # project_title, grade FROM Grades JOIN Students ON 
+    # (Students.github = Grades.student_github) WHERE project_title = ? AND student_github = ?"""
+    # query = """SELECT first_name, last_name, 
+    # project_title, grade FROM Grades, Students WHERE Grades.student_github = Students.github AND project_title = ? AND student_github = ?"""
+    query = """SELECT student_github, project_title, grade FROM Grades WHERE student_github = ? AND project_title = ?"""
+    DB.execute(query, (student_github,project_title,))
+    row = DB.fetchone()
+    # print 5.0, type(row)
+    print """\
+Student Github: %s
+Project: %s 
+Grade: %s""" % (row[0], row[1], row[2])
+
+def give_grade(student_github,project_title,grade):
+    #query = """UPDATE Grades SET grade = ? WHERE student_github = ? AND project_title = ?"""
+    query = """INSERT into Grades values (?,?,?)"""
+    DB.execute(query, (student_github,project_title,grade))
+    CONN.commit()
+    print "Successfully added grade %s to %s project for %s" % (grade,project_title,student_github)
+
+def get_grades(student_github):
+    query= """SELECT student_github, project_title, grade FROM Grades WHERE student_github = ?"""
+    print "Student Github: %s" %  student_github
+    for row in DB.execute(query, (student_github,)):
+    # print DB.execute(query, (student_github))
+        # row = DB.fetchone()
+        print """\
+Project: %s
+Grade: %s""" % (row[1], row[2])
 
 def connect_to_db():
     global DB, CONN
@@ -41,18 +76,30 @@ def main():
     command = None
     while command != "quit":
         input_string = raw_input("HBA Database> ")
-        # print 1.0, input_string
-        tokens = input_string.split()
-        # print 2.0, tokens
+        print 1.0, input_string
+        tokens = input_string.split(",")
+        print 2.0, tokens
         command = tokens[0]
-        # print 3.0, command
+        print 3.0, command
         args = tokens[1:]
-        # print 4.0, args
+        print 4.0, args
 
         if command == "student":
             get_student_by_github(*args) 
-        elif command == "new_student":
+        if command == "new_student":
             make_new_student(*args)
+        if command == "new_project":
+            make_new_project(*args)
+        if command == "project":
+            get_projects_by_title(*args)
+        if command == "grade":
+            get_grade_by_project_title(*args)
+        if command == 'give_grade':
+            give_grade(*args)
+        if command == "get_grades":
+            get_grades(*args)    
+        if command not in ["student", "new_student", "new_project", "project","grade","give_grade", "get_grades"]:
+            continue
 
     CONN.close()
 

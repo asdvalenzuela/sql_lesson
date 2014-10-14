@@ -3,6 +3,10 @@ import sqlite3
 DB = None
 CONN = None
 
+def make_new_student(first_name, last_name, github):
+    query = """INSERT into Students values (?,?,?)"""
+    DB.execute(quiery, (first_name,last_name,github))
+
 def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))

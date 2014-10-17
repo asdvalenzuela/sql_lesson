@@ -3,6 +3,26 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+@app.route("/newstudent")
+def new_student():
+    return render_template("new_student.html")
+
+@app.route("/projectgrades")
+def get_projectgrades():
+    hackbright_app.connect_to_db()
+    project_name = request.args.get("project")
+    row = hackbright_app.get_grades_by_project_title(project_name)
+    html = render_template("new_student_record.html", project_title = project_name, project_grades = row)
+    return html    
+
+@app.route("/projectgrades")
+def get_projectgrades():
+    hackbright_app.connect_to_db()
+    project_name = request.args.get("project")
+    row = hackbright_app.get_grades_by_project_title(project_name)
+    html = render_template("get_grades.html", project_title = project_name, project_grades = row)
+    return html
+
 @app.route("/student")
 def get_student():
     hackbright_app.connect_to_db()

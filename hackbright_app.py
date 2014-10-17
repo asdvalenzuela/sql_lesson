@@ -41,7 +41,7 @@ def get_grade_by_project_title(student_github, project_title):
     # (Students.github = Grades.student_github) WHERE project_title = ? AND student_github = ?"""
     # query = """SELECT first_name, last_name, 
     # project_title, grade FROM Grades, Students WHERE Grades.student_github = Students.github AND project_title = ? AND student_github = ?"""
-    query = """SELECT student_github, project_title, grade FROM Grades WHERE student_github = ? AND project_title = ?"""
+    query = """SELECT student_name, student_github, project_title, grade FROM Grades WHERE student_github = ? AND project_title = ?"""
     DB.execute(query, (student_github,project_title,))
     row = DB.fetchone()
     # print 5.0, type(row)
@@ -49,6 +49,23 @@ def get_grade_by_project_title(student_github, project_title):
 # Student Github: %s
 # Project: %s 
 Grade: %s""" % (row[0], row[1], row[2])
+
+def get_grades_by_project_title(project_title):
+    # query = """SELECT first_name, last_name, 
+    # project_title, grade FROM Grades JOIN Students ON 
+    # (Students.github = Grades.student_github) WHERE project_title = ? AND student_github = ?"""
+    # query = """SELECT first_name, last_name, 
+    # project_title, grade FROM Grades, Students WHERE Grades.student_github = Students.github AND project_title = ? AND student_github = ?"""
+    query = """SELECT student_github, project_title, grade FROM Grades WHERE project_title = ?"""
+    grades = {}
+    for row in DB.execute(query, (project_title,)):
+        grades[row[0]] = row[2]
+    # print 5.0, type(row)
+    return grades
+    # return """\
+# # Student Github: %s
+# # Project: %s 
+# Grade: %s""" % (row[0], row[1], row[2])
 
 def give_grade(student_github,project_title,grade):
     #query = """UPDATE Grades SET grade = ? WHERE student_github = ? AND project_title = ?"""
@@ -60,11 +77,11 @@ def give_grade(student_github,project_title,grade):
 def get_grades(student_github):
     query= """SELECT project_title, grade FROM Grades WHERE student_github = ?"""
     # print "Student Github: %s" %  student_github
-    grade_list = []
+    grade_list = {}
     for row in DB.execute(query, (student_github,)):
     # print DB.execute(query, (student_github))
         # row = DB.fetchone()
-        grade_list = grade_list + [row]
+        grade_list[row[0]] = row[1]
     return grade_list
         # """\
 # Student Github: %s        

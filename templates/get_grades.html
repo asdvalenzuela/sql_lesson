@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<h1>{{project_title}} Grades</h1>
+
+{% if project_grades %}
+
+    {% for grade in project_grades %}
+        <h2><strong>Github:</strong><a href="/student?github={{grade}}">{{grade}}</a> <strong>Grade:</strong> {{project_grades[grade]}}
+    {% endfor %}
+
+{% endif %}
+
+</body>
+</html>

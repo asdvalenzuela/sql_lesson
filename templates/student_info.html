@@ -5,11 +5,11 @@
 <p>This student is a real dreamboat!</p>
 <h2><strong> Grades </strong> <h2>
     {% if grade %}
-    <table>
+    <ul>
        {% for value in grade %}
-        <tr>
+<!--         <tr> -->
         
-        <td> {{ value }}</td>
+        <li> <a href="/projectgrades?project={{value}}">{{ value }}</a> : {{ grade[value] }}</li>
         
     </tr>
     {% endfor %}

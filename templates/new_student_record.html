@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<h1>Student Record</h1>
+
+<p>{{student_name}} has been successfully added.</p>
+
+<h2>Add Project Grades</h2>
+   <form action="">
+        <label for="project_name">Enter project name:</label>
+        <input type="text" name="project_name"/>
+        <label for="grade">Enter grade:</label>
+        <input type="text" name="grade">
+        <input type ="submit">
+    </form>  
+{% if project_grades %}
+
+    {% for grade in project_grades %}
+        <h2><strong>Github:</strong><a href="/student?github={{grade}}">{{grade}}</a> <strong>Grade:</strong> {{project_grades[grade]}}
+    {% endfor %}
+
+{% endif %}
+
+</body>
+</html>
